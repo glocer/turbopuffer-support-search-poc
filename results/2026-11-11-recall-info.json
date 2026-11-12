@@ -1,0 +1,11 @@
+{
+  "run_at_utc": "2026-11-12T00:07:00+00:00",
+  "hardware": "Apple M3 Pro, macOS 26.6.2",
+  "client_location": "Toronto (home network)",
+  "region": "gcp-northamerica-northeast2",
+  "namespace": "vscode-issues",
+  "docs": 100000,
+  "embedding": "BAAI/bge-small-en-v1.5, 384 dims, cosine",
+  "sdk": "turbopuffer 3.1.0 (Python)",
+  "k": 10
+}

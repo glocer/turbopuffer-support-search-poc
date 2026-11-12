@@ -1,0 +1,49 @@
+{
+  "run_at_utc": "2026-11-12T00:03:41+00:00",
+  "hardware": "Apple M3 Pro, macOS 26.6.2",
+  "client_location": "Toronto (home network)",
+  "region": "gcp-northamerica-northeast2",
+  "namespace": "vscode-issues",
+  "docs": 100000,
+  "embedding": "BAAI/bge-small-en-v1.5, 384 dims, cosine",
+  "sdk": "turbopuffer 3.1.0 (Python)",
+  "queries": 500,
+  "embed_ms_per_query_local": 73.5,
+  "pass1_seconds": 76,
+  "pass2_seconds": 77,
+  "first_response": {
+    "performance": {
+      "client_total_ms": 59.984542,
+      "client_compress_ms": 0.0,
+      "client_response_ms": 58.489708,
+      "client_body_read_ms": 0.166667,
+      "client_deserialize_ms": 1.127542,
+      "approx_namespace_size": 100000,
+      "cache_hit_ratio": 1.0,
+      "cache_temperature": "hot",
+      "exhaustive_search_count": 0,
+      "query_execution_ms": 10,
+      "server_total_ms": 10,
+      "embedding_ms": null,
+      "embedding_tokens": null,
+      "last_included_write_at": "2026-11-11T21:08:50.000000000Z"
+    },
+    "billing": {
+      "billable_logical_bytes_queried": 1280000000,
+      "billable_logical_bytes_returned": 12715
+    }
+  },
+  "errors": 0,
+  "temperature_counts": {
+    "pass1": {
+      "cold": 0,
+      "warm": 0,
+      "hot": 3000
+    },
+    "pass2": {
+      "cold": 0,
+      "warm": 0,
+      "hot": 3000
+    }
+  }
+}

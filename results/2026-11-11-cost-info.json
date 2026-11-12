@@ -1,0 +1,33 @@
+{
+  "run_at_utc": "2026-11-12T00:07:01+00:00",
+  "hardware": "Apple M3 Pro, macOS 26.6.2",
+  "client_location": "Toronto (home network)",
+  "region": "gcp-northamerica-northeast2",
+  "namespace": "vscode-issues",
+  "docs": 100000,
+  "embedding": "BAAI/bge-small-en-v1.5, 384 dims, cosine",
+  "sdk": "turbopuffer 3.1.0 (Python)",
+  "namespace_logical_bytes": 367847199,
+  "namespace_rows": 100000,
+  "bytes_per_doc": 3678,
+  "measured_per_request": {
+    "vector": {
+      "gb_queried_per_request": 1.28,
+      "kb_returned_per_request": 22.497312
+    },
+    "bm25": {
+      "gb_queried_per_request": 1.28,
+      "kb_returned_per_request": 23.5718
+    },
+    "hybrid": {
+      "gb_queried_per_request": 2.56,
+      "kb_returned_per_request": 222.798455
+    }
+  },
+  "assumptions": {
+    "queries_per_month": 1000000,
+    "rewrite_share_per_month": 0.1,
+    "write_batch_discount": 0.5,
+    "prices": "turbopuffer.com/pricing list prices checked 2026-11-11 (upper bounds); data-returned rate unpublished, excluded"
+  }
+}

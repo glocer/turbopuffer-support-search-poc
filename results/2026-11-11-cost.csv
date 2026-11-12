@@ -1,0 +1,3 @@
+docs,logical_size_gb,storage_usd_month,initial_load_usd_one_time,rewrites_usd_month,hybrid_gb_billed_per_query,query_gb_basis,queries_usd_month_at_1M_queries,usage_usd_month,billed_usd_month_launch_plan
+100000,0.368,0.12,0.37,0.04,2.56,measured,2.56,2.72,16.0
+1000000,3.678,1.21,3.68,0.37,7.357,modelled from published tiers,7.36,8.94,16.0

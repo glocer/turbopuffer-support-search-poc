@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "vscode-ticket-search": {
+      "type": "stdio",
+      "command": ".venv/bin/python",
+      "args": ["src/mcp_server.py"],
+      "env": {}
+    }
+  }
+}

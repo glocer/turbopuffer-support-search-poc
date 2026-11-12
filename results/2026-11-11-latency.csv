@@ -1,0 +1,13 @@
+mode,filter,temperature,n,client_p50_ms,client_p99_ms,server_p50_ms,server_p99_ms,client_max_ms
+vector,none,cold,0,nan,nan,nan,nan,
+vector,none,warm,500,22.1,28.1,10.0,15.0,55.1
+vector,open,cold,0,nan,nan,nan,nan,
+vector,open,warm,500,22.7,30.7,10.0,15.0,39.6
+bm25,none,cold,0,nan,nan,nan,nan,
+bm25,none,warm,500,19.2,28.1,10.0,16.0,32.6
+bm25,open,cold,0,nan,nan,nan,nan,
+bm25,open,warm,500,18.8,32.7,10.0,23.0,37.4
+hybrid,none,cold,0,nan,nan,nan,nan,
+hybrid,none,warm,500,33.2,48.2,10.0,14.0,61.1
+hybrid,open,cold,0,nan,nan,nan,nan,
+hybrid,open,warm,500,36.4,51.7,10.0,18.0,63.4
