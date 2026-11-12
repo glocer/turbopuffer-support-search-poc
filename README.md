@@ -1,6 +1,8 @@
 # Hybrid Search for an AI Support Agent: a turbopuffer POC
 
-**The short answer: turbopuffer meets every requirement we could measure.** Hybrid search over 100k support tickets returns in 33 ms at p50 and 48 ms at p99 from a laptop, vector recall@10 is 0.92 against exact search, and an AI agent answered 5 of 5 sample questions with 34 of 34 citations correct. At 1M documents the usage is about $9 a month, so the $16 Launch plan minimum is the real cost.
+**The short answer: turbopuffer meets every requirement we could measure.** Hybrid search over 100k support tickets returns in 33 ms at p50 and 48 ms at p99 from a laptop, vector recall@10 is 0.92 against exact search, and an AI agent answered 5 of 5 sample questions with 34 of 34 citations correct. Search is cheap too: under a cent per 1,000 queries, and about $9 a month for 1M tickets and 1M queries.
+
+**By the numbers:** 100,000 tickets fetched from GitHub, embedded locally and loaded in 100 seconds; about 7,700 benchmark queries, with 0 errors across 6,000 timed runs.
 
 ![Warm query latency by search mode](results/2026-11-11-latency.png)
 
@@ -25,7 +27,7 @@ This POC tests whether turbopuffer meets those requirements. Public GitHub issue
 | Warm latency, vector and BM25 | same | 19 to 23 ms p50, 28 to 33 ms p99 | Pass |
 | Cold latency | p99 < 1.5 s | Not observed (see caveats). First query after 13.5 h idle: **168 ms** | Not measured |
 | Search quality | recall@10 ≥ 0.90 | **0.92** unfiltered, **0.99** with filters | Pass |
-| Cost per 1M docs | reported | **~$9 / month** usage, so the $16 Launch minimum applies | Reported |
+| Cost per 1M docs | reported | **< $0.01 per 1,000 queries**; ~$9 / month for 1M tickets and 1M queries | Reported |
 | Agent answers | 5 of 5 with correct citations | **5 of 5**, 34 of 34 citations correct | Pass |
 
 All numbers are from 100,000 documents, 500 queries per configuration, run on 2026-11-11 and 2026-11-12. Raw data and run details are in [`results/`](results/).
@@ -59,18 +61,16 @@ recall@10 compares turbopuffer's approximate (ANN) top 10 with an exact brute-fo
 
 ### Cost
 
-The namespace holds 0.37 GB, about 3.7 KB per ticket. Projected with turbopuffer's published list prices (checked 2026-11-11):
+**Search spend is tiny.** Hybrid search costs about $0.0074 per 1,000 queries at 1M tickets, and storing a ticket costs about $0.0000012 a month. The namespace holds 0.37 GB, about 3.7 KB per ticket.
 
-| Item | 100k docs | 1M docs |
+| Unit | At 100k tickets (measured) | At 1M tickets (projected) |
 |---|---|---|
-| Storage | $0.12 / month | $1.21 / month |
-| Initial load (one-time) | $0.37 | $3.68 |
-| Updates (10% of docs per month) | $0.04 / month | $0.37 / month |
-| Queries (1M hybrid queries / month) | $2.56 / month | $7.36 / month |
-| **Usage total** | **$2.72 / month** | **$8.94 / month** |
-| **Billed on the Launch plan** | **$16 / month** | **$16 / month** |
+| Per 1,000 hybrid queries | $0.0026 | $0.0074 |
+| Storage per month | $0.12 | $1.21 |
+| One-time load | $0.37 | $3.68 |
+| Monthly total with 1M queries and 10% of tickets updated | **$2.72** | **$8.94** |
 
-Queries dominate. Every sub-query is billed at a 1.28 GB minimum, and hybrid runs two, so at this size the price is set by the minimum rather than by the data. The whole benchmark (about 7,700 queries, 12.5 TB billed) cost roughly one cent.
+**Growing the archive 10× raises the bill only about 3×**, because query pricing has volume tiers and a 1.28 GB per-query floor, so a small archive already pays the floor. The entire benchmark, about 7,700 queries and 12.5 TB billed, cost roughly one cent. Projections use turbopuffer's published list prices (checked 2026-11-11).
 
 ### Agent answers
 
@@ -90,7 +90,7 @@ The agent also said plainly when the tickets didn't answer the question. For Q3,
 
 ## 3. Recommendation
 
-**Adopt turbopuffer for this use case.** It meets every latency and quality target with wide headroom, hybrid search handles both plain-language questions and exact error strings, and at 1M tickets and 1M queries a month the cost still sits under the $16 plan minimum.
+**Adopt turbopuffer for this use case.** It meets every latency and quality target with wide headroom, hybrid search handles both plain-language questions and exact error strings, and search spend stays under $10 a month at 1M tickets and 1M queries.
 
 **The first thing to fix is the data, not the search.** Only the original issue text is indexed, so when a fix lives in a maintainer's comment or a linked duplicate, the agent can find the right ticket but can't tell the user what solved it. That limited three of the five answers. Indexing the closing comment and the duplicate-target link for each ticket is the highest-value next step.
 
@@ -115,7 +115,7 @@ Claude Code ──MCP──> mcp_server.py ──> search.py ──────�
 - **Single client, single region.** All timings are from one laptop in Toronto, on a home network, to `gcp-northamerica-northeast2`, with requests sent one at a time. Concurrency and throughput were not tested.
 - **Queries are issue titles.** 495 of the 500 benchmark queries are randomly sampled issue titles (seed 42), plus the 5 sample questions. Titles are a fair stand-in for how people phrase questions, but they're not real support traffic.
 - **Recall covers vector search only.** BM25 is exact by design, and hybrid has no single ground truth to compare against.
-- **Cost is a projection.** It uses list prices, which the pricing page shows as upper bounds, assumes size grows linearly with document count, and excludes the charge for data returned, whose rate isn't published.
+- **Cost is usage-based and projected.** It uses list prices, which the pricing page shows as upper bounds, assumes size grows linearly with document count, and excludes the charge for data returned, whose rate isn't published. turbopuffer plans also have a monthly minimum spend, which isn't included here.
 - **Citation grading was manual.** 15 of the 34 citations were checked against the full ticket text and 19 against search snippets.
 
 ## 6. Run it yourself
