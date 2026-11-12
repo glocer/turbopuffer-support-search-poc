@@ -84,7 +84,9 @@ Claude Code acted as the support agent, calling the search through an MCP server
 | 4 | How have people fixed Remote-SSH connection timeouts? | Closed, resolved tickets | 6 / 6 |
 | 5 | What IntelliSense performance problems were reported in the last year? | Date filter | 9 / 9 |
 
-<!-- Screenshot: results/agent-answer.png (Claude Code answering Q2 with citations) -->
+![Claude Code answering Q2 with cited tickets](results/agent-answer.png)
+
+*A fresh run of Q2 on 2026-11-12: two searches, four tickets read in full, then an answer with linked citations and a caveat about what the index can't see.*
 
 The agent also said plainly when the tickets didn't answer the question. For Q3, it reported that no open macOS ticket matched exactly and pointed out that the only open file-watcher CPU bug is on Windows.
 
