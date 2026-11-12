@@ -96,11 +96,9 @@ The agent also said plainly when the tickets didn't answer the question. For Q3,
 
 ## 4. How it works
 
-```
-GitHub issues ──> ingest.py ──> bge-small (local) ──> turbopuffer namespace
-                                                        │  vector + BM25 + filters
-Claude Code ──MCP──> mcp_server.py ──> search.py ───────┘  hybrid = RRF fusion
-```
+![Architecture: load path from GitHub through local embedding into turbopuffer, and query path from Claude Code through an MCP server to hybrid search](docs/architecture.svg)
+
+**Only the index and search run in the cloud.** Fetching, embedding, the MCP server and the benchmarks all run on a laptop, and turbopuffer's split between cache and object storage is why the results report warm and cold latency separately.
 
 - **Data:** the 100,000 most recent `microsoft/vscode` issues (June 2023 to November 2026), pull requests excluded. 15,564 open, 84,436 closed.
 - **Documents:** one per issue, no chunking. The vector comes from title plus the first 2,000 characters of the body. BM25 indexes title plus the first 8,000 characters. Filterable attributes: state, state reason, labels, created and closed dates.

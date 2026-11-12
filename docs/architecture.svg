@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 600" width="1040" height="600" role="img" aria-label="Architecture: GitHub issues are downloaded, embedded locally and upserted into a turbopuffer namespace. Questions go from Claude Code through an MCP server to search.py, which runs a hybrid query against turbopuffer and returns cited tickets.">
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+    .zone { fill: #EEF1F5; stroke: #C9D0DB; stroke-dasharray: 5 5; }
+    .zl { fill: #5B6577; font-size: 11px; font-weight: 600; letter-spacing: .08em; }
+    .box { fill: #FFFFFF; stroke: #C9D0DB; stroke-width: 1.2; }
+    .row { fill: #EEF1F5; stroke: #C9D0DB; }
+    .t { fill: #1B2230; font-size: 13px; font-weight: 600; text-anchor: middle; }
+    .tm { fill: #1B2230; font-size: 12.5px; font-weight: 500; text-anchor: middle; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+    .s { fill: #5B6577; font-size: 11px; text-anchor: middle; }
+    .r { fill: #1B2230; font-size: 12px; text-anchor: middle; }
+    .lbl { font-size: 11px; font-weight: 500; }
+    .load { stroke: #B26A00; fill: none; stroke-width: 1.8; }
+    .query { stroke: #1F63B5; fill: none; stroke-width: 1.8; }
+    .neu { stroke: #7A8496; fill: none; stroke-width: 1.5; stroke-dasharray: 4 3; }
+    .lload { fill: #B26A00; }
+    .lquery { fill: #1F63B5; }
+    .lneu { fill: #5B6577; }
+    .leg { fill: #5B6577; font-size: 12px; }
+  </style>
+  <defs>
+    <marker id="aL" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#B26A00"/></marker>
+    <marker id="aQ" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F63B5"/></marker>
+    <marker id="aN" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7A8496"/></marker>
+  </defs>
+
+  <rect x="0" y="0" width="1040" height="600" rx="12" fill="#F6F7F9"/>
+
+  <!-- Zones -->
+  <rect class="zone" x="200" y="30" width="540" height="500" rx="14"/>
+  <text class="zl" x="216" y="54">LAPTOP · APPLE M3 PRO</text>
+  <rect class="zone" x="770" y="30" width="250" height="500" rx="14"/>
+  <text class="zl" x="786" y="54">TURBOPUFFER CLOUD</text>
+
+  <!-- External -->
+  <rect class="box" x="20" y="70" width="140" height="64" rx="8"/>
+  <text class="t" x="90" y="97">GitHub API</text>
+  <text class="s" x="90" y="116">microsoft/vscode</text>
+
+  <rect class="box" x="20" y="330" width="140" height="64" rx="8"/>
+  <text class="t" x="90" y="357">Support engineer</text>
+  <text class="s" x="90" y="376">asks a question</text>
+
+  <!-- Load lane -->
+  <rect class="box" x="230" y="70" width="200" height="64" rx="8"/>
+  <text class="tm" x="330" y="97">ingest.py</text>
+  <text class="s" x="330" y="116">download · clean · embed · upsert</text>
+
+  <rect class="box" x="230" y="190" width="200" height="48" rx="8"/>
+  <text class="tm" x="330" y="210">data/</text>
+  <text class="s" x="330" y="227">raw issue cache (not in repo)</text>
+
+  <rect class="box" x="480" y="190" width="230" height="48" rx="8"/>
+  <text class="tm" x="595" y="210">bge-small-en-v1.5</text>
+  <text class="s" x="595" y="227">local model · 384-dim vectors</text>
+
+  <!-- Query lane -->
+  <rect class="box" x="230" y="330" width="130" height="64" rx="8"/>
+  <text class="t" x="295" y="357">Claude Code</text>
+  <text class="s" x="295" y="376">agent</text>
+
+  <rect class="box" x="400" y="330" width="130" height="64" rx="8"/>
+  <text class="tm" x="465" y="357">mcp_server.py</text>
+  <text class="s" x="465" y="376">search + get_ticket</text>
+
+  <rect class="box" x="570" y="330" width="140" height="64" rx="8"/>
+  <text class="tm" x="640" y="357">search.py</text>
+  <text class="s" x="640" y="376">embed + filters</text>
+
+  <!-- Benchmarks -->
+  <rect class="box" x="400" y="450" width="130" height="56" rx="8"/>
+  <text class="tm" x="465" y="474">results/</text>
+  <text class="s" x="465" y="492">CSV + chart</text>
+
+  <rect class="box" x="570" y="450" width="140" height="56" rx="8"/>
+  <text class="tm" x="640" y="474">bench/*.py</text>
+  <text class="s" x="640" y="492">latency · recall · cost</text>
+
+  <!-- Cloud -->
+  <rect class="box" x="790" y="70" width="210" height="220" rx="8"/>
+  <text class="t" x="895" y="94">namespace · RRF fusion</text>
+  <text class="s" x="895" y="111">vscode-issues · 100k docs</text>
+  <rect class="row" x="805" y="125" width="180" height="36" rx="5"/>
+  <text class="r" x="895" y="148">vector index (ANN)</text>
+  <rect class="row" x="805" y="171" width="180" height="36" rx="5"/>
+  <text class="r" x="895" y="194">BM25 full-text index</text>
+  <rect class="row" x="805" y="217" width="180" height="36" rx="5"/>
+  <text class="r" x="895" y="240">attributes for filters</text>
+  <text class="s" x="895" y="273">labels · state · dates · url</text>
+
+  <rect class="box" x="805" y="330" width="180" height="48" rx="8"/>
+  <text class="t" x="895" y="350">SSD + memory cache</text>
+  <text class="s" x="895" y="367">serves warm queries</text>
+
+  <rect class="box" x="805" y="450" width="180" height="48" rx="8"/>
+  <text class="t" x="895" y="470">Object storage</text>
+  <text class="s" x="895" y="487">all data · cold reads</text>
+
+  <!-- Load path -->
+  <line class="load" x1="160" y1="102" x2="228" y2="102" marker-end="url(#aL)"/>
+  <text class="lbl lload" x="194" y="94" text-anchor="middle">REST</text>
+  <line class="load" x1="330" y1="134" x2="330" y2="188" marker-end="url(#aL)"/>
+  <text class="lbl lload" x="338" y="166">caches raw JSON</text>
+  <path class="load" d="M430,118 H595 V188" marker-end="url(#aL)"/>
+  <text class="lbl lload" x="512" y="112" text-anchor="middle">embeds tickets</text>
+  <line class="load" x1="430" y1="84" x2="788" y2="84" marker-end="url(#aL)"/>
+  <text class="lbl lload" x="600" y="77" text-anchor="middle">batch upsert: vectors + text + attributes</text>
+
+  <!-- Query path -->
+  <line class="query" x1="160" y1="352" x2="228" y2="352" marker-end="url(#aQ)"/>
+  <text class="lbl lquery" x="194" y="344" text-anchor="middle">question</text>
+  <line class="query" x1="230" y1="378" x2="162" y2="378" marker-end="url(#aQ)"/>
+  <text class="lbl lquery" x="194" y="394" text-anchor="middle">cited answer</text>
+  <line class="query" x1="360" y1="352" x2="398" y2="352" marker-end="url(#aQ)"/>
+  <text class="lbl lquery" x="380" y="344" text-anchor="middle">MCP</text>
+  <line class="query" x1="400" y1="378" x2="362" y2="378" marker-end="url(#aQ)"/>
+  <text class="lbl lquery" x="380" y="394" text-anchor="middle">tickets</text>
+  <line class="query" x1="530" y1="352" x2="568" y2="352" marker-end="url(#aQ)"/>
+  <text class="lbl lquery" x="550" y="344" text-anchor="middle">query</text>
+  <line class="query" x1="570" y1="378" x2="532" y2="378" marker-end="url(#aQ)"/>
+  <text class="lbl lquery" x="550" y="394" text-anchor="middle">top 10</text>
+  <line class="query" x1="640" y1="330" x2="640" y2="240" marker-end="url(#aQ)"/>
+  <text class="lbl lquery" x="632" y="290" text-anchor="end">embeds query</text>
+  <path class="query" d="M712,345 H755 V250 H788" marker-start="url(#aQ)" marker-end="url(#aQ)"/>
+  <text class="lbl lquery" x="0" y="0" text-anchor="middle" transform="translate(766 298) rotate(-90)">multi_query ⇄ fused</text>
+
+  <!-- Benchmarks + storage internals -->
+  <line class="neu" x1="640" y1="450" x2="640" y2="396" marker-end="url(#aN)"/>
+  <text class="lbl lneu" x="648" y="428">times queries</text>
+  <line class="neu" x1="570" y1="478" x2="532" y2="478" marker-end="url(#aN)"/>
+  <text class="lbl lneu" x="551" y="470" text-anchor="middle" style="font-size:10px">writes</text>
+  <line class="neu" x1="895" y1="290" x2="895" y2="328" marker-end="url(#aN)"/>
+  <text class="lbl lneu" x="903" y="314">served from</text>
+  <line class="neu" x1="895" y1="450" x2="895" y2="380" marker-end="url(#aN)"/>
+  <text class="lbl lneu" x="903" y="418">loads on cold miss</text>
+
+  <!-- Legend -->
+  <line class="load" x1="30" y1="565" x2="56" y2="565"/>
+  <text class="leg" x="64" y="569">Load path, runs once</text>
+  <line class="query" x1="250" y1="565" x2="276" y2="565"/>
+  <text class="leg" x="284" y="569">Query path, every question</text>
+  <line class="neu" x1="500" y1="565" x2="526" y2="565"/>
+  <text class="leg" x="534" y="569">Benchmarks and storage internals</text>
+</svg>
