@@ -1,6 +1,6 @@
 # Hybrid Search for an AI Support Agent: a turbopuffer POC
 
-**The short answer: turbopuffer meets every requirement we could measure.** Hybrid search over 100k support tickets returns in 33 ms at p50 and 48 ms at p99 from a laptop, vector recall@10 is 0.92 against exact search, and an AI agent answered 5 of 5 sample questions with 34 of 34 citations correct. Search is cheap too: under a cent per 1,000 queries, and about $9 a month for 1M tickets and 1M queries.
+**The short answer: turbopuffer meets every requirement we could measure, and it was easy to build on.** Hybrid search over 100k support tickets returns in 33 ms at p50 and 48 ms at p99 from a laptop, vector recall@10 is 0.92 against exact search, and an AI agent answered 5 of 5 sample questions with 34 of 34 citations correct. Search is cheap too: under a cent per 1,000 queries, and about $9 a month for 1M tickets and 1M queries.
 
 **By the numbers:** 100,000 tickets fetched from GitHub, embedded locally and loaded in 100 seconds; about 7,700 benchmark queries, with 0 errors across 6,000 timed runs.
 
@@ -90,13 +90,35 @@ Claude Code acted as the support agent, calling the search through an MCP server
 
 The agent also said plainly when the tickets didn't answer the question. For Q3, it reported that no open macOS ticket matched exactly and pointed out that the only open file-watcher CPU bug is on Windows.
 
-## 3. Recommendation
+## 3. What turbopuffer got right
+
+Beyond passing the targets, a few things stood out from building on turbopuffer for this POC. Each one is backed by data from this test.
+
+- **Server time barely moves, whatever you ask.** Vector, BM25 and hybrid, filtered or not, all ran at 10 ms p50 on the server, with every p99 between 14 and 23 ms. The search mode is a product decision, not a performance trade-off.
+- **Filters are close to free, and they don't cost recall.** Adding a filter moved client p50 by less than 4 ms. Recall stayed at 0.99 even when the filter kept only 0.6% of the corpus. That's a common weak spot for vector indexes that filter after the approximate search, and it didn't show up here.
+- **Hybrid search is one call.** A single `multi_query` runs vector and BM25 side by side and fuses them on the server with reciprocal rank fusion. There's no second round trip and no fusion code to maintain.
+- **Nothing to provision.** The namespace was created by the first write, with no cluster sizing or index tuning. 100k documents loaded in 100 seconds, and every one of the 6,000 timed queries was served fully from the index, with 0 documents left to scan unindexed.
+- **The cost curve bends the right way.** Data lives in object storage with an SSD and memory cache in front, so storage is $1.21 a month per 1M tickets. Growing the archive 10× raised the projected bill only about 3.3×.
+- **The cache holds.** After 13.5 hours with no traffic, the namespace was still fully cached, and the first query back took 103 ms on the server.
+- **Every response shows its own latency and cost.** Each query returns server time, cache temperature and billable bytes. This POC's latency and cost tables were built from turbopuffer's own response data rather than estimates, which is exactly what a customer needs to trust a POC.
+- **Small integration footprint.** The whole search layer and MCP server come to about 250 lines of Python, and there were 0 errors across about 7,700 queries.
+
+### Field notes for the turbopuffer team
+
+A few things a customer would ask about, from a deployed engineer's point of view:
+
+- **Cold behavior is hard to test on demand.** There's no documented cache lifetime and no way to force a namespace cold, so cold latency could only be inferred. A documented eviction window, or a test switch, would make cold-start POCs easy.
+- **One price is missing from the pricing page.** Data returned is billed per GB, but the rate isn't published, so cost models have one blind spot.
+- **Two SDK details to call out in the docs.** Rows leave out attributes that are null, and datetimes come back as ISO strings. Both tripped up this POC during the build.
+- **Explain the query minimum early in sizing.** Every sub-query is billed at least 1.28 GB, so small namespaces pay the floor and hybrid pays it twice. That's fine at scale, but worth saying up front.
+
+## 4. Recommendation
 
 **Adopt turbopuffer for this use case.** It meets every latency and quality target with wide headroom, hybrid search handles both plain-language questions and exact error strings, and search spend stays under $10 a month at 1M tickets and 1M queries.
 
 **The first thing to fix is the data, not the search.** Only the original issue text is indexed, so when a fix lives in a maintainer's comment or a linked duplicate, the agent can find the right ticket but can't tell the user what solved it. That limited three of the five answers. Indexing the closing comment and the duplicate-target link for each ticket is the highest-value next step.
 
-## 4. How it works
+## 5. How it works
 
 ![Architecture: load path from GitHub through local embedding into turbopuffer, and query path from Claude Code through an MCP server to hybrid search](docs/architecture.svg)
 
@@ -109,7 +131,7 @@ The agent also said plainly when the tickets didn't answer the question. For Q3,
 - **Hybrid search:** one `multi_query` call runs ANN and BM25 (50 candidates each) and fuses them server-side with reciprocal rank fusion.
 - **Agent:** Claude Code, connected to a local MCP server. No LLM API key is needed.
 
-## 5. Caveats
+## 6. Caveats
 
 - **Cold latency was not observed.** turbopuffer has no way to force a namespace out of cache, and after 13.5 hours idle every query still reported a hot cache. The first query after that idle period took 168 ms on the client (103 ms on the server), well under the 1.5 s target, but that's not a true cold read. See `bench/cold.py` and `results/2026-11-11-cold-probes.csv`.
 - **Single client, single region.** All timings are from one laptop in Toronto, on a home network, to `gcp-northamerica-northeast2`, with requests sent one at a time. Concurrency and throughput were not tested.
@@ -118,7 +140,7 @@ The agent also said plainly when the tickets didn't answer the question. For Q3,
 - **Cost is usage-based and projected.** It uses list prices, which the pricing page shows as upper bounds, assumes size grows linearly with document count, and excludes the charge for data returned, whose rate isn't published. turbopuffer plans also have a monthly minimum spend, which isn't included here.
 - **Citation grading was manual.** 15 of the 34 citations were checked against the full ticket text and 19 against search snippets.
 
-## 6. Run it yourself
+## 7. Run it yourself
 
 Requirements: Python 3.11+, a turbopuffer account and a GitHub token with read access to public repos.
 
