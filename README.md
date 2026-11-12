@@ -103,15 +103,6 @@ Beyond passing the targets, a few things stood out from building on turbopuffer 
 - **Every response shows its own latency and cost.** Each query returns server time, cache temperature and billable bytes. This POC's latency and cost tables were built from turbopuffer's own response data rather than estimates, which is exactly what a customer needs to trust a POC.
 - **Small integration footprint.** The whole search layer and MCP server come to about 250 lines of Python, and there were 0 errors across about 7,700 queries.
 
-### Field notes for the turbopuffer team
-
-A few things a customer would ask about, from a deployed engineer's point of view:
-
-- **Cold behavior is hard to test on demand.** There's no documented cache lifetime and no way to force a namespace cold, so cold latency could only be inferred. A documented eviction window, or a test switch, would make cold-start POCs easy.
-- **One price is missing from the pricing page.** Data returned is billed per GB, but the rate isn't published, so cost models have one blind spot.
-- **Two SDK details to call out in the docs.** Rows leave out attributes that are null, and datetimes come back as ISO strings. Both tripped up this POC during the build.
-- **Explain the query minimum early in sizing.** Every sub-query is billed at least 1.28 GB, so small namespaces pay the floor and hybrid pays it twice. That's fine at scale, but worth saying up front.
-
 ## 4. Recommendation
 
 **Adopt turbopuffer for this use case.** It meets every latency and quality target with wide headroom, hybrid search handles both plain-language questions and exact error strings, and search spend stays under $10 a month at 1M tickets and 1M queries.
