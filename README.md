@@ -25,7 +25,7 @@ This POC tests whether turbopuffer meets those requirements. Public GitHub issue
 |---|---|---|---|
 | Warm latency, hybrid | p50 < 100 ms, p99 < 300 ms | **33 ms / 48 ms** (36 / 52 ms with a filter) | Pass |
 | Warm latency, vector and BM25 | same | 19 to 23 ms p50, 28 to 33 ms p99 | Pass |
-| Cold latency | p99 < 1.5 s | Not observed (see caveats). First query after 13.5 h idle: **168 ms** | Not measured |
+| Cold latency | p99 < 1.5 s | Not observed (see caveats). First query after 13.5 h and ~24 h idle: **168 / 145 ms** | Not measured |
 | Search quality | recall@10 ≥ 0.90 | **0.92** unfiltered, **0.99** with filters | Pass |
 | Cost per 1M docs | reported | **< $0.01 per 1,000 queries**; ~$9 / month for 1M tickets and 1M queries | Reported |
 | Agent answers | 5 of 5 with correct citations | **5 of 5**, 34 of 34 citations correct | Pass |
@@ -99,7 +99,7 @@ Beyond passing the targets, a few things stood out from building on turbopuffer 
 - **Hybrid search is one call.** A single `multi_query` runs vector and BM25 side by side and fuses them on the server with reciprocal rank fusion. There's no second round trip and no fusion code to maintain.
 - **Nothing to provision.** The namespace was created by the first write, with no cluster sizing or index tuning. 100k documents loaded in 100 seconds, and every one of the 6,000 timed queries was served fully from the index, with 0 documents left to scan unindexed.
 - **The cost curve bends the right way.** Data lives in object storage with an SSD and memory cache in front, so storage is $1.21 a month per 1M tickets. Growing the archive 10× raised the projected bill only about 3.3×.
-- **The cache holds.** After 13.5 hours with no traffic, the namespace was still fully cached, and the first query back took 103 ms on the server.
+- **The cache holds.** After 13.5 hours, and again after about a day with no traffic, the namespace was still fully cached. The first query back took 103 ms and 56 ms on the server.
 - **Every response shows its own latency and cost.** Each query returns server time, cache temperature and billable bytes. This POC's latency and cost tables were built from turbopuffer's own response data rather than estimates, which is exactly what a customer needs to trust a POC.
 - **Small integration footprint.** The whole search layer and MCP server come to about 250 lines of Python, and there were 0 errors across about 7,700 queries.
 
@@ -124,7 +124,7 @@ Beyond passing the targets, a few things stood out from building on turbopuffer 
 
 ## 6. Caveats
 
-- **Cold latency was not observed.** turbopuffer has no way to force a namespace out of cache, and after 13.5 hours idle every query still reported a hot cache. The first query after that idle period took 168 ms on the client (103 ms on the server), well under the 1.5 s target, but that's not a true cold read. See `bench/cold.py` and `results/2026-11-11-cold-probes.csv`.
+- **Cold latency was not observed.** turbopuffer has no way to force a namespace out of cache, and after 13.5 hours and again after about a day idle, all 60 probe queries still reported a hot cache. The first query after each idle period took 168 ms and 145 ms on the client (103 ms and 56 ms on the server), well under the 1.5 s target, but that's not a true cold read. See `bench/cold.py` and `results/2026-11-11-cold-probes.csv`.
 - **Single client, single region.** All timings are from one laptop in Toronto, on a home network, to `gcp-northamerica-northeast2`, with requests sent one at a time. Concurrency and throughput were not tested.
 - **Queries are issue titles.** 495 of the 500 benchmark queries are randomly sampled issue titles (seed 42), plus the 5 sample questions. Titles are a fair stand-in for how people phrase questions, but they're not real support traffic.
 - **Recall covers vector search only.** BM25 is exact by design, and hybrid has no single ground truth to compare against.
